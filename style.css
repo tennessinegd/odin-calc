@@ -1,0 +1,41 @@
+body {
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.calculator {
+    display: flex;
+    flex-direction: column;
+}
+
+.display {
+    width: 280px;
+    text-align: right;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    box-sizing: border-box;
+    height: 70px;
+    width: 70px;
+    border: none;
+    margin: 0;
+    flex: none;
+}
+
+#evaluate {
+    align-self: stretch;
+    width: initial;
+}
