@@ -11,7 +11,7 @@ body {
     flex-direction: column;
 }
 
-.display {
+#display {
     width: 280px;
     text-align: right;
 }
@@ -35,7 +35,8 @@ button {
     flex: none;
 }
 
-#evaluate {
+#evaluate,
+#clear {
     align-self: stretch;
     width: initial;
 }
