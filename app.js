@@ -84,6 +84,16 @@ buttonList.forEach(button => {
                 refreshDisplay(true);
                 displayString += result;
             }
+
+            // properly render the operand upon evaluation
+            if (currentNumbers.length === 1) {
+                currentNumbers[0] = String(+currentNumbers[0]);
+                // 
+                if (currentNumbers[0] === "NaN") {
+                    currentNumbers[0] = "";
+                }
+                displayString = currentNumbers[0];
+            }
             refreshDisplay();
             // reset the active operation
             currentOperation = "";
