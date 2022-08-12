@@ -4,8 +4,7 @@ const DECIMAL_PLACES = 8;
 // get display
 const display = document.querySelector("#display-text");
 
-let displayString = "";
-let currentNumbers = [""];
+let calcState = [""];
 let currentOperation = "";
 
 // a way to easily debug without clogging up the console
@@ -55,63 +54,58 @@ function operate(operation, a, b) {
     }
 }
 
-function refreshDisplay(wipe=false) {
-    if (wipe) displayString = "";
-    display.textContent = displayString;
+function refreshDisplay() {
+    display.textContent = calcState.join("");
 }
 
 function resetState() {
     // clear any variables
-    currentNumbers.splice(0, currentNumbers.length);
-    currentNumbers.push("");
+    calcState.splice(0, calcState.length);
+    calcState.push("");
     currentOperation = "";
-    refreshDisplay(true);
+    refreshDisplay();
 }
 
 // button functions
 const buttonFunctions = {
     number(e) {
         let number = e.currentTarget.textContent;
-        // add the number to the display
-        displayString += number;
         // concatenate the number to the last operand
-        currentNumbers[currentNumbers.length-1] += number;
+        calcState[calcState.length-1] += number;
         refreshDisplay();
         debugLog.push(number);
     },
 
     operation(e) {
         // check for "-" as an operand, disable buttons until further input is provided
-        if (currentNumbers[currentNumbers.length-1] === "-") {
+        if (calcState[calcState.length-1] === "-") {
             return;
         }
         let operation = e.currentTarget.id;
         let sign = (operation === "power") ? "^" : e.currentTarget.textContent;
         // special case for inputting negative numbers
-        if (operation === "subtract" && currentNumbers[currentNumbers.length-1] === "") {
-            displayString += sign;
-            currentNumbers[currentNumbers.length-1] += sign;
+        if (operation === "subtract" && calcState[calcState.length-1] === "") {
+            calcState[calcState.length-1] += sign;
             refreshDisplay();
             debugLog.push("neg");
             return;
         }
         // if run without the first operand, add a zero
-        if (!currentNumbers[0]) {
-            displayString += 0;
+        if (!calcState[0]) {
+            calcState[0] = "0";
         }
         // if an operation is active, evaluate it first
         if (currentOperation) {
-            let result = operate(currentOperation, ...currentNumbers);
-            currentNumbers.push(result.toString());
-            currentNumbers.splice(0, 2);
-            refreshDisplay(true);
-            displayString += result;
+            let result = operate(currentOperation, calcState[0], calcState[2]);
+            calcState.push(result.toString());
+            calcState.splice(0, 3);
+            refreshDisplay();
         }
-        displayString += sign;
+        calcState.push(` ${sign} `);
         // set operation as active
         currentOperation = operation;
         // switch to second operand
-        currentNumbers.push("")
+        calcState.push("")
         refreshDisplay();
         debugLog.push(operation);
     },
@@ -119,68 +113,56 @@ const buttonFunctions = {
     evaluate(e) {
         // if an operation is active, evaluate it
         if (currentOperation) {
-            let result = operate(currentOperation, ...currentNumbers);
-            currentNumbers.splice(0, 2);
-            currentNumbers.push(result.toString());
-            refreshDisplay(true);
-            displayString += result;
+            let result = operate(currentOperation, calcState[0], calcState[2]);
+            calcState.push(result.toString());
+            calcState.splice(0, 3);
+            refreshDisplay();
         }
 
         // properly render the operand upon evaluation
-        if (currentNumbers.length === 1) {
-            currentNumbers[0] = String(toDecimalPlaces(+currentNumbers[0], DECIMAL_PLACES));
+        if (calcState.length === 1) {
+            calcState[0] = String(toDecimalPlaces(+calcState[0], DECIMAL_PLACES));
             // 
-            if (currentNumbers[0] === "NaN") {
-                currentNumbers[0] = "";
+            if (calcState[0] === "NaN") {
+                calcState[0] = "";
             }
-            displayString = currentNumbers[0];
         }
         refreshDisplay();
         // reset the active operation
         currentOperation = "";
-        debugLog.push(e.currentTarget.id);
+        debugLog.push("eval");
     },
 
     backspace(e) {
-        // was the operand erased or was it empty beforehand?
-        let myFault = false;
-        if (currentNumbers.length) {
-            // check if the operand was already empty
-            let isOperandEmpty = (currentNumbers[currentNumbers.length-1].length === 0)
-            // remove the last character of the last operand
-            let numberLength = currentNumbers[currentNumbers.length-1].length;
-            currentNumbers[currentNumbers.length-1] = currentNumbers[currentNumbers.length-1].slice(0, numberLength-1);
-            // if the operand wasn't empty before and is now, that's myFault
-            if (!isOperandEmpty && currentNumbers[currentNumbers.length-1].length === 0) myFault = true;
-        }
-        let displayLength = displayString.length;
-        if (displayLength) displayString = displayString.slice(0, displayLength-1);
-
-        // if the operand was already empty and the first operand exists, that means an operation was deleted
-        // if an operation was deleted, pop the excess operand and reset the operation
-        if (!currentNumbers[2] && currentNumbers.length > 1 && !myFault) {
+        // are you deleting an operation?
+        if (calcState.length === 3 && calcState[2] === "") {
+            calcState.splice(1, 2);
             currentOperation = ""
-            currentNumbers.pop()
+        } else if (calcState[calcState.length-1] === "Infinity") {
+            calcState[calcState.length-1] = "";
+        } else {
+            // remove the last character of the last operand
+            let numberLength = calcState[calcState.length-1].length;
+            calcState[calcState.length-1] = calcState[calcState.length-1].slice(0, numberLength-1);
         }
-
-        refreshDisplay();
-        debugLog.push(e.currentTarget.id);
+            refreshDisplay();
+        debugLog.push("backspace");
     },
 
     decimal(e) {
         // add decimal point to last operand and display. not that hard
         /* additional check: don't do anything if the last operand already
            contains a decimal point */
-        if (!currentNumbers[currentNumbers.length-1].includes(".")) {
-            displayString += ".";
-            currentNumbers[currentNumbers.length-1] += ".";
+        if (!calcState[calcState.length-1].includes(".")) {
+            calcState[calcState.length-1] += ".";
             refreshDisplay();
         }
-        debugLog.push(e.currentTarget.id);
+        debugLog.push("decimal");
     },
 
     clear() {
         resetState();
+        debugLog.push("clear");
     }
 }
 
