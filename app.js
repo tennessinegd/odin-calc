@@ -1,3 +1,4 @@
+// get display
 const display = document.querySelector("#display");
 
 let displayString = "";
@@ -11,6 +12,7 @@ multiply = (a, b) => a * b;
 divide = (a, b) => a / b;
 
 function operate(operation, a, b) {
+    // prevent empty decimals from crashing the calculator
     b === "." ? 0 : b;
     switch (operation) {
         case "add":
@@ -18,9 +20,11 @@ function operate(operation, a, b) {
         case "subtract":
             return subtract(+a, +b);
         case "multiply":
+            // prevent empty operands from changing the result
             b = +b || 1;
             return multiply(+a,+ b);
         case "divide":
+            // snarky error message
             if (b === "0") {
                 alert("You're real clever, aren't you?")
             }
@@ -39,7 +43,9 @@ buttonList.forEach(button => {
     if (button.classList.contains("number")) {
         button.addEventListener("click", e => {
             let number = e.target.textContent;
+            // add the number to the display
             displayString += number;
+            // concatenate the number to the last operand
             currentNumbers[currentNumbers.length-1] += number;
             refreshDisplay();
             console.log(number);
@@ -48,10 +54,11 @@ buttonList.forEach(button => {
         button.addEventListener("click", e => {
             let sign = e.target.textContent;
             let operation = e.target.id;
+            // if run without the first operand, add a zero
             if (!currentNumbers[0]) {
                 displayString += 0;
             }
-
+            // if an operation is active, evaluate it first
             if (currentOperation) {
                 let result = operate(currentOperation, ...currentNumbers);
                 currentNumbers.push(result.toString());
@@ -60,13 +67,16 @@ buttonList.forEach(button => {
                 displayString += result;
             }
             displayString += sign;
+            // set operation as active
             currentOperation = operation;
+            // switch to second operand
             currentNumbers.push("")
             refreshDisplay();
             console.log(operation);
         })
     } else if (button.id === "evaluate") {
         button.addEventListener("click", e => {
+            // if an operation is active, evaluate it
             if (currentOperation) {
                 let result = operate(currentOperation, ...currentNumbers);
                 currentNumbers.splice(0, 2);
@@ -75,13 +85,17 @@ buttonList.forEach(button => {
                 displayString += result;
             }
             refreshDisplay();
+            // reset the active operation
             currentOperation = "";
             console.log(e.target.id);
         })
     } else if (button.id === "backspace") {
         button.addEventListener("click", e => {
+            // was the operand erased or was it empty beforehand?
             let myFault = false;
+            // if the list isn't empty
             if (currentNumbers.length) {
+                // remove the last character of the last operand
                 let numberLength = currentNumbers[currentNumbers.length-1].length;
                 currentNumbers[currentNumbers.length-1] = currentNumbers[currentNumbers.length-1].slice(0, numberLength-1);
                 if (currentNumbers[currentNumbers.length-1].length === 0) myFault = true;
@@ -89,6 +103,8 @@ buttonList.forEach(button => {
             let displayLength = displayString.length;
             if (displayLength) displayString = displayString.slice(0, displayLength-1);
 
+            // if the operand was already empty and the first operand exists, that means an operation was deleted
+            // if an operation was deleted, pop the excess operand and reset the operation
             if (!currentNumbers[2] && currentNumbers.length > 1 && !myFault) {
                 currentOperation = ""
                 currentNumbers.pop()
@@ -99,6 +115,7 @@ buttonList.forEach(button => {
         })
     } else if (button.id === "decimal") {
         button.addEventListener("click", e => {
+            // add decimal point to last operand and display. not that hard
             displayString += ".";
             currentNumbers[currentNumbers.length-1] += ".";
             refreshDisplay();
