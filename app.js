@@ -93,12 +93,14 @@ buttonList.forEach(button => {
         button.addEventListener("click", e => {
             // was the operand erased or was it empty beforehand?
             let myFault = false;
-            // if the list isn't empty
             if (currentNumbers.length) {
+                // check if the operand was already empty
+                let isOperandEmpty = (currentNumbers[currentNumbers.length-1].length === 0)
                 // remove the last character of the last operand
                 let numberLength = currentNumbers[currentNumbers.length-1].length;
                 currentNumbers[currentNumbers.length-1] = currentNumbers[currentNumbers.length-1].slice(0, numberLength-1);
-                if (currentNumbers[currentNumbers.length-1].length === 0) myFault = true;
+                // if the operand wasn't empty before and is now, that's myFault
+                if (!isOperandEmpty && currentNumbers[currentNumbers.length-1].length === 0) myFault = true;
             }
             let displayLength = displayString.length;
             if (displayLength) displayString = displayString.slice(0, displayLength-1);
