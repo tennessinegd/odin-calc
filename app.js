@@ -21,14 +21,14 @@ function operate(operation, a, b) {
             return subtract(+a, +b);
         case "multiply":
             // prevent empty operands from changing the result
-            b = +b || 1;
+            b = b === "" ? 1 : b;
             return multiply(+a,+ b);
         case "divide":
             // snarky error message
             if (b === "0") {
                 alert("You're real clever, aren't you?")
             }
-            b = +b || 1;
+            b = b === "" ? 1 : b;
             return divide(+a, +b);
     }
 }
