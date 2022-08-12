@@ -137,9 +137,13 @@ buttonList.forEach(button => {
     } else if (button.id === "decimal") {
         button.addEventListener("click", e => {
             // add decimal point to last operand and display. not that hard
-            displayString += ".";
-            currentNumbers[currentNumbers.length-1] += ".";
-            refreshDisplay();
+            /* additional check: don't do anything if the last operand already
+               contains a decimal point */
+            if (!currentNumbers[currentNumbers.length-1].includes(".")) {
+                displayString += ".";
+                currentNumbers[currentNumbers.length-1] += ".";
+                refreshDisplay();
+            }
             console.log(e.target.id);
         })
     } else if (button.id === "clear") {
