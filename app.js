@@ -37,7 +37,8 @@ function operate(operation, a, b) {
             if (b === "0") {
                 alert("You're real clever, aren't you?")
             }
-            b = b === "" ? 1 : b;
+            // empty operands or zero will simply do nothing
+            b = +b || 1;
             return toDecimalPlaces(divide(+a, +b), DECIMAL_PLACES);
     }
 }
