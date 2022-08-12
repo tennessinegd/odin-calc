@@ -2,7 +2,7 @@
 const DECIMAL_PLACES = 8;
 
 // get display
-const display = document.querySelector("#display");
+const display = document.querySelector("#display-text");
 
 let displayString = "";
 let currentNumbers = [""];
