@@ -8,6 +8,9 @@ let displayString = "";
 let currentNumbers = [""];
 let currentOperation = "";
 
+// a way to easily debug without clogging up the console
+let debugLog = [];
+
 // basic arithmetic functions
 add = (a, b) => a + b;
 subtract = (a, b) => a - b;
@@ -69,18 +72,30 @@ const buttonList = document.querySelectorAll(".calculator button");
 buttonList.forEach(button => {
     if (button.classList.contains("number")) {
         button.addEventListener("click", e => {
-            let number = e.target.textContent;
+            let number = e.currentTarget.textContent;
             // add the number to the display
             displayString += number;
             // concatenate the number to the last operand
             currentNumbers[currentNumbers.length-1] += number;
             refreshDisplay();
-            console.log(number);
+            debugLog.push(number);
         })
     } else if (button.classList.contains("operation")) {
         button.addEventListener("click", e => {
-            let operation = e.target.id;
-            let sign = (operation === "power") ? "^" : e.target.textContent;
+            // check for "-" as an operand, disable buttons until further input is provided
+            if (currentNumbers[currentNumbers.length-1] === "-") {
+                return;
+            }
+            let operation = e.currentTarget.id;
+            let sign = (operation === "power") ? "^" : e.currentTarget.textContent;
+            // special case for inputting negative numbers
+            if (operation === "subtract" && currentNumbers[currentNumbers.length-1] === "") {
+                displayString += sign;
+                currentNumbers[currentNumbers.length-1] += sign;
+                refreshDisplay();
+                debugLog.push("neg");
+                return;
+            }
             // if run without the first operand, add a zero
             if (!currentNumbers[0]) {
                 displayString += 0;
@@ -93,13 +108,13 @@ buttonList.forEach(button => {
                 refreshDisplay(true);
                 displayString += result;
             }
-            displayString += sign;
+            displayString += ` ${sign} `;
             // set operation as active
             currentOperation = operation;
             // switch to second operand
             currentNumbers.push("")
             refreshDisplay();
-            console.log(operation);
+            debugLog.push(operation);
         })
     } else if (button.id === "evaluate") {
         button.addEventListener("click", e => {
@@ -124,7 +139,7 @@ buttonList.forEach(button => {
             refreshDisplay();
             // reset the active operation
             currentOperation = "";
-            console.log(e.target.id);
+            debugLog.push(e.currentTarget.id);
         })
     } else if (button.id === "backspace") {
         button.addEventListener("click", e => {
@@ -150,7 +165,7 @@ buttonList.forEach(button => {
             }
 
             refreshDisplay();
-            console.log(e.target.id);
+            debugLog.push(e.currentTarget.id);
         })
     } else if (button.id === "decimal") {
         button.addEventListener("click", e => {
@@ -162,7 +177,7 @@ buttonList.forEach(button => {
                 currentNumbers[currentNumbers.length-1] += ".";
                 refreshDisplay();
             }
-            console.log(e.target.id);
+            debugLog.push(e.currentTarget.id);
         })
     } else if (button.id === "clear") {
         button.addEventListener("click", e => {
