@@ -46,8 +46,6 @@ button {
     flex: none;
 }
 
-#evaluate,
-#clear {
-    align-self: stretch;
-    width: initial;
+#evaluate {
+    width: 140px;
 }

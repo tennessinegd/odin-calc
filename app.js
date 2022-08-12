@@ -13,6 +13,7 @@ add = (a, b) => a + b;
 subtract = (a, b) => a - b;
 multiply = (a, b) => a * b;
 divide = (a, b) => a / b;
+power = (a, b) => a ** b;
 
 // round the number down to n decimal places
 function toDecimalPlaces(number, n) {
@@ -35,17 +36,33 @@ function operate(operation, a, b) {
         case "divide":
             // snarky error message
             if (b === "0") {
-                alert("You're real clever, aren't you?")
+                alert("You're real clever, aren't you?");
             }
             // empty operands or zero will simply do nothing
             b = +b || 1;
             return toDecimalPlaces(divide(+a, +b), DECIMAL_PLACES);
+        case "power":
+            b = b === "" ? 1 : b;
+            let result = power(+a, +b);
+            if (Number.isNaN(result)) {
+                alert("That's a complex number!");
+                resetState();
+            }
+            return toDecimalPlaces(result, DECIMAL_PLACES);
     }
 }
 
 function refreshDisplay(wipe=false) {
     if (wipe) displayString = "";
     display.textContent = displayString;
+}
+
+function resetState() {
+    // clear any variables
+    currentNumbers.splice(0, currentNumbers.length);
+    currentNumbers.push("");
+    currentOperation = "";
+    refreshDisplay(true);
 }
 
 const buttonList = document.querySelectorAll(".calculator button");
@@ -62,8 +79,8 @@ buttonList.forEach(button => {
         })
     } else if (button.classList.contains("operation")) {
         button.addEventListener("click", e => {
-            let sign = e.target.textContent;
             let operation = e.target.id;
+            let sign = (operation === "power") ? "^" : e.target.textContent;
             // if run without the first operand, add a zero
             if (!currentNumbers[0]) {
                 displayString += 0;
@@ -149,11 +166,7 @@ buttonList.forEach(button => {
         })
     } else if (button.id === "clear") {
         button.addEventListener("click", e => {
-            // clear any variables
-            currentNumbers.splice(0, currentNumbers.length);
-            currentNumbers.push("");
-            currentOperation = "";
-            refreshDisplay(true);
+            resetState();
         })
     }
 });
