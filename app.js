@@ -69,6 +69,8 @@ function resetState() {
 // button functions
 const buttonFunctions = {
     number(e) {
+        // input limit
+        if (calcState[calcState.length-1].length === 15) return; 
         let number = e.currentTarget.textContent;
         // concatenate the number to the last operand
         calcState[calcState.length-1] += number;

@@ -39,12 +39,12 @@ body {
     box-sizing: border-box;
     background-color: #29384f;
     font-family: "Jost", "Roboto", "Arial", sans-serif;
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 300;
     text-align: right;
-    height: 80px;
+    height: 60px;
     width: 278px;
-    border: 16px solid #29384f;
+    border: 10px solid #29384f;
     border-radius: 6px;
     /* magic StackOverflow solution */
     /* makes the display scroll along with the text */
