@@ -195,6 +195,7 @@ document.querySelector("body").addEventListener("keydown", e => {
         "/": ["divide", "÷"],
         "÷": ["divide", "÷"],
         "^": ["power", "xy"],
+        "p": ["power", "xy"],
         "=": "evaluate",
         "Enter": "evaluate",
         "Backspace": "backspace",
