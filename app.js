@@ -74,7 +74,7 @@ const buttonFunctions = {
         
         let number = e.currentTarget.textContent;
         // prevent leading zeros
-        if (number === "0" && calcState[calcState.length-1] === "") return;
+        if (number === "0" && calcState[calcState.length-1] === "0") return;
 
         // concatenate the number to the last operand
         calcState[calcState.length-1] += number;
