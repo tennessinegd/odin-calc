@@ -26,6 +26,8 @@ body {
 }
 
 .calculator {
+    /* disable dragging */
+    user-select: none;
     background-color: #171c29;
     border: 2px solid #464e64;
     border-radius: 10px;
