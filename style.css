@@ -33,6 +33,7 @@ body {
     align-self: center;
     display: flex;
     flex-direction: column;
+    gap: 10px;
 }
 
 #display {
@@ -72,7 +73,6 @@ body {
     justify-content: space-between;
 }
 
-.calculator,
 .buttons,
 .row {
     gap: 6px;
