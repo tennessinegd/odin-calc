@@ -73,8 +73,8 @@ const buttonFunctions = {
         if (calcState[calcState.length-1].length === 15) return; 
         
         let number = e.currentTarget.textContent;
-        // prevent leading zeros
-        if (calcState[calcState.length-1] === "0") return;
+        // prevent leading zeros and Infinity
+        if (calcState[calcState.length-1] === "0" || calcState[calcState.length-1] === "Infinity") return;
 
         // concatenate the number to the last operand
         calcState[calcState.length-1] += number;
